@@ -16,11 +16,15 @@ class UserActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
+        showMenu()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        showMenu()
         val inflater = menuInflater
         inflater.inflate(R.menu.user_menu, menu)
+        val newMenu = menu?.findItem(R.id.new_deal)
+        newMenu?.isVisible = FirebaseUtil.isAdmin!!
         return true
     }
 
@@ -54,11 +58,16 @@ class UserActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         FirebaseUtil.signIn(this)
+        showMenu()
         FirebaseUtil.mDeals = ArrayList()
         val adapter = DealAdapter()
         val dealsLayoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         rv_traveldeals.layoutManager = dealsLayoutManager
         rv_traveldeals.adapter = adapter
         FirebaseUtil.attachListener()
+    }
+
+    fun showMenu(){
+        invalidateOptionsMenu()
     }
 }

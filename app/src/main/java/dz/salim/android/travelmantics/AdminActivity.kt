@@ -13,9 +13,9 @@ import kotlinx.android.synthetic.main.activity_admin.*
 
 class AdminActivity : AppCompatActivity() {
 
-    lateinit var mFirebaseDatabase: FirebaseDatabase
-    lateinit var mDatabaseReference: DatabaseReference
-    lateinit var deal: Traveldeal
+    private lateinit var mFirebaseDatabase: FirebaseDatabase
+    private lateinit var mDatabaseReference: DatabaseReference
+    private lateinit var deal: Traveldeal
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin)
@@ -33,6 +33,9 @@ class AdminActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.save_menu, menu)
+        menu?.findItem(R.id.delete_menu)!!.isVisible = FirebaseUtil.isAdmin!!
+        menu.findItem(R.id.save_menu)!!.isVisible = FirebaseUtil.isAdmin!!
+        enableEditTexts(FirebaseUtil.isAdmin!!)
         return true
     }
 
@@ -77,4 +80,13 @@ class AdminActivity : AppCompatActivity() {
         val intent = Intent(this, UserActivity::class.java)
         startActivity(intent)
     }
+
+    private fun enableEditTexts(isEnabled: Boolean){
+        etTitle.isEnabled = isEnabled
+        etDescription.isEnabled = isEnabled
+        etPrice.isEnabled = isEnabled
+        FirebaseUtil.attachListener()
+    }
+
+
 }
