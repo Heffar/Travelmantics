@@ -1,5 +1,7 @@
 package dz.salim.android.travelmantics
 
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +11,7 @@ import com.google.firebase.database.*
 
 class DealAdapter: RecyclerView.Adapter<DealAdapter.DealViewHolder>() {
 
-    var deals: ArrayList<Traveldeal> = ArrayList()
+    var deals: ArrayList<Traveldeal> = FirebaseUtil.mDeals
     private var mFirebaseDatabase: FirebaseDatabase
     private var mDatabaseReference: DatabaseReference
     private var mChildEventListener : ChildEventListener
@@ -17,29 +19,29 @@ class DealAdapter: RecyclerView.Adapter<DealAdapter.DealViewHolder>() {
     init {
         mFirebaseDatabase = FirebaseUtil.mFirebaseDatabase
         mDatabaseReference = FirebaseUtil.mDatabaseReference.child("traveldeals")
-        deals = FirebaseUtil.mDeals
         mChildEventListener = object : ChildEventListener{
             override fun onCancelled(p0: DatabaseError) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
             }
 
             override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
             }
 
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
             }
 
             override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                val deal: Traveldeal? = dataSnapshot.getValue(Traveldeal::class.java)
-                deal?.id = dataSnapshot.key
-                deals.add(deal!!)
+                val newDeal: Traveldeal? = dataSnapshot.getValue(Traveldeal::class.java)
+                newDeal?.id = dataSnapshot.key
+                deals.add(newDeal!!)
                 notifyItemInserted(deals.size-1)
+                Log.d("DEALADAPTER", "${FirebaseUtil.mDeals.size}")
             }
 
             override fun onChildRemoved(p0: DataSnapshot) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
             }
 
         }
@@ -61,7 +63,7 @@ class DealAdapter: RecyclerView.Adapter<DealAdapter.DealViewHolder>() {
         holder.bind(deal)
     }
 
-    class DealViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+    class DealViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener{
 
         var tvTitle: TextView
         var tvDescription: TextView
@@ -70,6 +72,7 @@ class DealAdapter: RecyclerView.Adapter<DealAdapter.DealViewHolder>() {
             tvTitle = itemView.findViewById(R.id.tvTitle)
             tvDescription = itemView.findViewById(R.id.tvDescription)
             tvPrice = itemView.findViewById(R.id.tvPrice)
+            itemView.setOnClickListener(this)
         }
 
         fun bind(deal: Traveldeal){
@@ -77,5 +80,14 @@ class DealAdapter: RecyclerView.Adapter<DealAdapter.DealViewHolder>() {
             tvDescription.text = deal.description
             tvPrice.text = deal.price
         }
+
+        override fun onClick(v: View?) {
+            val position = adapterPosition
+            val selectedDeal = FirebaseUtil.mDeals[position]
+            val intent = Intent(v?.context, AdminActivity::class.java)
+            intent.putExtra("Deal", selectedDeal)
+            v?.context?.startActivity(intent)
+        }
+
     }
 }
