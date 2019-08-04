@@ -1,13 +1,16 @@
 package dz.salim.android.travelmantics
 
 import android.content.Intent
+import android.content.res.Resources
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.*
+import com.squareup.picasso.Picasso
 
 class DealAdapter: RecyclerView.Adapter<DealAdapter.DealViewHolder>() {
 
@@ -37,7 +40,6 @@ class DealAdapter: RecyclerView.Adapter<DealAdapter.DealViewHolder>() {
                 newDeal?.id = dataSnapshot.key
                 deals.add(newDeal!!)
                 notifyItemInserted(deals.size-1)
-                Log.d("DEALADAPTER", "${FirebaseUtil.mDeals.size}")
             }
 
             override fun onChildRemoved(p0: DataSnapshot) {
@@ -68,10 +70,12 @@ class DealAdapter: RecyclerView.Adapter<DealAdapter.DealViewHolder>() {
         var tvTitle: TextView
         var tvDescription: TextView
         var tvPrice: TextView
+        var imageDeal: ImageView
         init {
             tvTitle = itemView.findViewById(R.id.tvTitle)
             tvDescription = itemView.findViewById(R.id.tvDescription)
             tvPrice = itemView.findViewById(R.id.tvPrice)
+            imageDeal = itemView.findViewById(R.id.imageDeal)
             itemView.setOnClickListener(this)
         }
 
@@ -79,8 +83,18 @@ class DealAdapter: RecyclerView.Adapter<DealAdapter.DealViewHolder>() {
             tvTitle.text = deal.title
             tvDescription.text = deal.description
             tvPrice.text = deal.price
+            showImage(deal.imageUrl)
         }
 
+        private fun showImage(url: String?){
+            if (url != null && !url.isEmpty()){
+                Picasso.get()
+                    .load(url)
+                    .resize(160, 160)
+                    .centerCrop()
+                    .into(imageDeal)
+            }
+        }
         override fun onClick(v: View?) {
             val position = adapterPosition
             val selectedDeal = FirebaseUtil.mDeals[position]

@@ -1,12 +1,10 @@
 package dz.salim.android.travelmantics
 
-import android.app.Activity
-import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 
 object FirebaseUtil{
     val RC_SIGN_IN = 123
@@ -16,6 +14,9 @@ object FirebaseUtil{
     var mFirebaseAuth: FirebaseAuth
     var mAuthListener: FirebaseAuth.AuthStateListener?
     var isAdmin: Boolean?
+    var mFirebaseStorage: FirebaseStorage
+    var mStorageReference: StorageReference
+
     init {
         mFirebaseDatabase = FirebaseDatabase.getInstance()
         mDatabaseReference = mFirebaseDatabase.reference
@@ -23,6 +24,8 @@ object FirebaseUtil{
         mFirebaseAuth = FirebaseAuth.getInstance()
         mAuthListener = null
         isAdmin = false
+        mFirebaseStorage = FirebaseStorage.getInstance()
+        mStorageReference = mFirebaseStorage.reference.child("deals_pictures")
     }
 
     fun signIn(activity: UserActivity){
