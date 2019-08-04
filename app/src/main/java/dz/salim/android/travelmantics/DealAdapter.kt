@@ -1,8 +1,6 @@
 package dz.salim.android.travelmantics
 
 import android.content.Intent
-import android.content.res.Resources
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,6 +69,7 @@ class DealAdapter: RecyclerView.Adapter<DealAdapter.DealViewHolder>() {
         var tvDescription: TextView
         var tvPrice: TextView
         var imageDeal: ImageView
+
         init {
             tvTitle = itemView.findViewById(R.id.tvTitle)
             tvDescription = itemView.findViewById(R.id.tvDescription)
@@ -90,7 +89,7 @@ class DealAdapter: RecyclerView.Adapter<DealAdapter.DealViewHolder>() {
             if (url != null && !url.isEmpty()){
                 Picasso.get()
                     .load(url)
-                    .resize(160, 160)
+                    .resize(180, 180)
                     .centerCrop()
                     .into(imageDeal)
             }
